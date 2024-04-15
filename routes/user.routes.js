@@ -11,7 +11,7 @@ router.get("/", async (req, res, next) => {
     let users = await User.find();
 
     if (users.length === 0) {
-      res.status(404).json({ message: "no users found" });
+      res.status(200).json({ message: "no users found" });
     }
 
     res.json(users);
@@ -24,7 +24,7 @@ router.get("/:userId", async (req, res, next) => {
   try {
     let user = await User.findById(req.params.userId);
     if (!user) {
-      res.status(404).json({ message: "no user found" });
+      res.status(200).json({ message: "no user found" });
     }
     res.json(user);
   } catch (error) {
@@ -45,6 +45,7 @@ router.put("/:userId", async (req, res, next) => {
     let name;
     let editedUser;
     let userToEdit = await User.findByIdAndUpdate(req.params.userId);
+    res.status(201).json(userToEdit);
   } catch (error) {
     next();
   }

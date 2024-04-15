@@ -3,20 +3,17 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 ///models
-const User = require("../models/User.model");
-const Event = require("../models/Event.model");
 const Comment = require("../models/Comment.model");
-const garbagePlace = require("../models/GarbagePlace.model");
 ///middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const IsUserLoggedIn = require("../middlewares/IsUserLoggedIn");
 ///routes
-router.use(isAuthenticated);
+// router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
     let comments = await Comment.find();
     if (comments.length === 0) {
-      res.status(404).json({ message: "no comments found" });
+      res.status(200).json({ message: "no comments found" });
     }
     res.json(comments);
   } catch (error) {
@@ -39,7 +36,7 @@ router.get("/:commentId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     let newComment = await Comment.create(req.body);
-    res.json(newComment);
+    res.status(201).json(newComment);
   } catch (error) {
     next(error);
   }

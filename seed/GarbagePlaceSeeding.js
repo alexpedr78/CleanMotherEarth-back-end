@@ -12,7 +12,7 @@ mongoose.connect(`mongodb://localhost:27017/practicebackend`, {
 const garbagePlaceData = [
   {
     name: "Forest",
-    userId: "661ba103a2b5979d57e0224c",
+    creator: "661ba103a2b5979d57e0224c",
   },
 ];
 

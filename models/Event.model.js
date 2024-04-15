@@ -20,20 +20,16 @@ const eventSchema = new Schema(
       type: String,
       default: "adventure.jpg",
     },
-    participants: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
+    description: {
+      type: String,
+    },
     locationStartPoint: {
-      type: {
+      long: {
         type: String,
-        enum: ["Point"],
         required: true,
       },
-      coordinates: {
-        type: [Number],
+      lat: {
+        type: String,
         required: true,
       },
     },

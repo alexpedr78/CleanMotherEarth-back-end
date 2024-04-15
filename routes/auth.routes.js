@@ -6,6 +6,7 @@ const User = require("../models/User.model");
 const GarbagePlaceSchema = require("../models/GarbagePlace.model");
 const Event = require("../models/Event.model");
 const Comment = require("../models/Comment.model");
+const IWillCome = require("../models/IWillCome.model");
 
 const IsUserLoggedIn = require("../middlewares/IsUserLoggedIn");
 const isAuthenticated = require("../middlewares/isAuthenticated");

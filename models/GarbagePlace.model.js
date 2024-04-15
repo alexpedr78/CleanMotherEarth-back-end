@@ -6,17 +6,21 @@ const garbagePlaceSchema = new Schema(
       required: true,
       trim: true,
     },
-    userId: { type: Schema.Types.ObjectId, Ref: "User" },
+    creator: { type: Schema.Types.ObjectId, Ref: "User" },
     // photo: {
-    //   // required: false,
+    //   required: true,
     //   type: String,
     //   default: "plasticBag.jpg",
     // },
-    // location: {
-    //   // required: false,
-    //   type: { type: String },
-    //   coordinates: [Number],
-    // },
+    location: {
+      // required: true,
+      long: { type: String },
+      lat: { type: String },
+    },
+    description: {
+      required: true,
+      type: String,
+    },
   },
   {
     timestamps: true,

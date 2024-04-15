@@ -2,7 +2,6 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 // models
-const User = require("../models/User.model");
 const garbagePlace = require("../models/GarbagePlace.model");
 //middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
@@ -12,7 +11,7 @@ router.get("/", async (req, res, next) => {
   try {
     let places = await garbagePlace.find();
     if (places.length === 0) {
-      res.status(404).json({ message: "no places found" });
+      res.status(200).json({ message: "no places found" });
     }
     res.json(places);
   } catch (error) {
@@ -24,7 +23,7 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
   try {
     let place = await garbagePlace.findById(req.params.garbagePlaceId);
     if (!place) {
-      res.status(404).json({ message: "no places match the id" });
+      res.status(200).json({ message: "no places match the id" });
     }
     res.json(place);
   } catch (error) {
@@ -35,7 +34,7 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     let newGarbagePlace = await Comment.create(req.body);
-    res.json(newGarbagePlace);
+    res.status(201).json(newGarbagePlace);
   } catch (error) {
     next(error);
   }
