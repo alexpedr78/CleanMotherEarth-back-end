@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
+
 const eventSchema = new Schema(
   {
     name: {
@@ -7,21 +7,42 @@ const eventSchema = new Schema(
       required: true,
       trim: true,
     },
-    userId: String,
-    timeStart: Date,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    timeStart: {
+      type: Date,
+      required: true,
+    },
     photo: {
       type: String,
       default: "adventure.jpg",
     },
-    location: {
-      type: { type: String },
-      coordinates: [Number],
+    participants: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    locationStartPoint: {
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
   },
   {
     timestamps: true,
   }
 );
+
 const Event = model("Event", eventSchema);
 
-module.exports = eventSchema;
+module.exports = Event;
