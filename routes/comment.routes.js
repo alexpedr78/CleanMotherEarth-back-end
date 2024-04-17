@@ -6,10 +6,11 @@ const jwt = require("jsonwebtoken");
 const Comment = require("../models/Comment.model");
 ///middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
-const IsUserLoggedIn = require("../middlewares/IsUserLoggedIn");
+const isAdmin = require("../middlewares/IsAdmin");
 ///routes
+//GET ALL COMMENTS FOR ADMIN ONLY
 // router.use(isAuthenticated);
-router.get("/", async (req, res, next) => {
+router.get("/", isAdmin, async (req, res, next) => {
   try {
     let comments = await Comment.find();
     if (comments.length === 0) {
@@ -20,7 +21,7 @@ router.get("/", async (req, res, next) => {
     next();
   }
 });
-
+//GET A SPECIFIC COMMENT
 router.get("/:commentId", async (req, res, next) => {
   try {
     let comment = await Comment.findById(req.params.commentId);
@@ -32,29 +33,59 @@ router.get("/:commentId", async (req, res, next) => {
     next();
   }
 });
-
+//GET ALL COMMENT BY EVENT
+router.get("/event/:eventId", async (req, res, next) => {
+  try {
+    let comments = await Comment.find({ eventId: req.params.eventId });
+    if (comments.length === 0) {
+      res.status(200).json({ message: "no comments found" });
+    }
+    res.json(comments);
+  } catch (error) {
+    next();
+  }
+});
+//GET ALL COMMENT BY USER
+router.get("/user/:userId", async (req, res, next) => {
+  try {
+    let comments = await Comment.find({ creator: req.params.userId });
+    if (comments.length === 0) {
+      res.status(200).json({ message: "no comments found" });
+    }
+    res.json(comments);
+  } catch (error) {
+    next();
+  }
+});
+//CREATE A COMMENT
 router.post("/", async (req, res, next) => {
   try {
     let newComment = await Comment.create(req.body);
+    console.log(newComment);
     res.status(201).json(newComment);
   } catch (error) {
     next(error);
   }
 });
-
+// EDIT A COMMENT ONLY FOR CREATOR OR ADMIN
 router.put("/:commentId", async (req, res, next) => {
   try {
-    let name;
-    let commentToEdit = await Comment.findById(req.params.commentId);
-    if (!commentToEdit) {
-      res.status(404).json({ message: "no commment found" });
+    const updatedComment = await Comment.findByIdAndUpdate(
+      req.params.commentId,
+      { content: req.body.content },
+      { new: true }
+    );
+
+    if (!updatedComment) {
+      return res.status(404).json({ message: "No comment found." });
     }
-    res.json(commentToEdit);
+
+    res.json(updatedComment);
   } catch (error) {
-    next();
+    next(error);
   }
 });
-
+// DELETE A COMMENT ONLY FOR CREATOR OR ADMIN
 router.delete("/:commentId", async (req, res, next) => {
   try {
     let commentToDelete = await Comment.findByIdAndDelete(req.params.commentId);

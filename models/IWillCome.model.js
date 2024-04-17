@@ -8,9 +8,10 @@ const IWillComeSchema = new Schema(
       ref: "User",
       required: true,
     },
-    eventID: {
+    eventId: {
       type: Schema.Types.ObjectId,
       ref: "Event",
+      required: true,
     },
   },
   {

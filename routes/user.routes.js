@@ -3,23 +3,20 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 //middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
-const IsUserLoggedIn = require("../middlewares/IsUserLoggedIn");
-const IsAdminOrUser = require("../middlewares/IsAdminOrUser");
-
+const IsAdminOrUser = require("../middlewares/IsAdmin");
+//GET ALL USERS ONLY ADMIN
 router.get("/", async (req, res, next) => {
   try {
     let users = await User.find();
-
     if (users.length === 0) {
       res.status(200).json({ message: "no users found" });
     }
-
     res.json(users);
   } catch (error) {
     next();
   }
 });
-
+//GET ONE USER
 router.get("/:userId", async (req, res, next) => {
   try {
     let user = await User.findById(req.params.userId);
@@ -31,7 +28,7 @@ router.get("/:userId", async (req, res, next) => {
     next();
   }
 });
-
+//CREATE A USER ONLY ADMIN
 router.post("/", async (req, res, next) => {
   try {
     let userTocreate = await User.findById(req.params.userId);
@@ -39,24 +36,38 @@ router.post("/", async (req, res, next) => {
     next();
   }
 });
-
+//EDIT A USER ONLY CREATOR
 router.put("/:userId", async (req, res, next) => {
   try {
-    let name;
-    let editedUser;
-    let userToEdit = await User.findByIdAndUpdate(req.params.userId);
-    res.status(201).json(userToEdit);
+    const { name, pseudo, email, avatar } = req.body;
+    const updateData = {};
+    if (avatar) updateData.avatar = avatar;
+    if (name) updateData.name = name;
+    if (pseudo) updateData.pseudo = pseudo;
+    if (email) updateData.email = email;
+    const editedUser = await User.findByIdAndUpdate(
+      req.params.userId,
+      updateData,
+      { new: true }
+    );
+    if (!editedUser) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.json(editedUser);
   } catch (error) {
-    next();
+    next(error);
   }
 });
-
+//DELETE A USER ONLY ADMIN
 router.delete("/:userId", async (req, res, next) => {
   try {
     let userToDelete = await User.findByIdAndDelete(req.params.userId);
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(204).json({ message: "User deleted successfully." });
   } catch (error) {
-    next();
+    next(error);
   }
 });
-
 module.exports = router;

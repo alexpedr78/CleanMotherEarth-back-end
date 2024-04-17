@@ -7,14 +7,14 @@ const eventSchema = new Schema(
       required: true,
       trim: true,
     },
-    userId: {
+    creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
     timeStart: {
       type: Date,
-      required: true,
+      // required: true,
     },
     photo: {
       type: String,
@@ -22,15 +22,16 @@ const eventSchema = new Schema(
     },
     description: {
       type: String,
+      required: true,
     },
     locationStartPoint: {
       long: {
         type: String,
-        required: true,
+        // required: true,
       },
       lat: {
         type: String,
-        required: true,
+        // required: true,
       },
     },
   },

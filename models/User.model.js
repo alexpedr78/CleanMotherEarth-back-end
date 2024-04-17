@@ -24,20 +24,16 @@ const userSchema = new Schema(
       minlength: 6,
       select: false,
     },
-    // photo: {
-    //   type: String,
-    //   default: "default.jpg",
-    // },
+    avatar: {
+      type: String,
+      default: "default.jpg",
+    },
     role: {
       type: String,
       enum: ["admin", "user"],
       default: "user",
       // select: false,
     },
-    // location: {
-    //   type: { type: String },
-    //   coordinates: [Number],
-    // },
   },
   {
     timestamps: true,

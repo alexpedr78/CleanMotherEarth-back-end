@@ -1,6 +1,7 @@
 // Import necessary modules
 const mongoose = require("mongoose");
-const GarbagePlace = require("../models/GarbagePlace.model.js");
+const Event = require("../models/Event.model.js"); // Assuming you have a User model defined
+const PORT = 5008;
 
 // Connect to MongoDB
 mongoose.connect(`mongodb://localhost:27017/practicebackend`, {
@@ -9,16 +10,15 @@ mongoose.connect(`mongodb://localhost:27017/practicebackend`, {
 });
 
 // Define data to seed
-const garbagePlaceData = [
+const eventsData = [
   {
-    name: "caca",
+    name: "big cleaning and dancing naked party",
     creator: "661ba103a2b5979d57e0224c",
-    description: "olala",
   },
 ];
 
 // Insert data into the collection
-GarbagePlace.insertMany(garbagePlaceData)
+Event.insertMany(eventsData)
   .then(() => {
     console.log("Data seeding complete");
     mongoose.connection.close(); // Close the MongoDB connection

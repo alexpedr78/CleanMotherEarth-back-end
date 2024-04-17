@@ -5,61 +5,70 @@ const jwt = require("jsonwebtoken");
 const IWillCome = require("../models/IWillCome.model");
 //middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
-const IsUserLoggedIn = require("../middlewares/IsUserLoggedIn");
 
-router.get("/", async (req, res, next) => {
+//GET ALL JOIGNERS MENTIONS
+router.get("/user/:userId", async (req, res, next) => {
   try {
-    let joigners = await IWillCome.find({ creator: req.currentUserId }).sort({
-      publishDate: -1,
-    });
-    if (comings.length === 0) {
-      res
-        .status(200)
-        .json({ message: "no people found to come to this event" });
+    let joigners = await IWillCome.find({
+      creator: req.params.userId,
+    }).sort({ publishDate: -1 });
+
+    if (joigners.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No attendees found for your events." });
     }
+
     res.json(joigners);
   } catch (error) {
-    next();
+    next(error);
   }
 });
-
+//GET ALL JOIGNERS BY EVENT
 router.get("/:eventId", async (req, res, next) => {
   try {
-    let coming = await IWillCome.find({ eventId: req.params.eventId });
-    if (!coming) {
-      res.status(200).json({ message: "no one joigning yet" });
-    }
-    res.json(coming);
-  } catch (error) {
-    next();
-  }
-});
-
-router.post("/", async (req, res, next) => {
-  try {
-    let isAlreadyJoigning = await IWillCome.find({
+    let attendees = await IWillCome.find({
       eventId: req.params.eventId,
     });
-    if (isAlreadyJoigning.length > 0) {
-      res.status(404).json({ message: "alreaady a fav" });
-    }
-    if (isAlreadyJoigning.length === 0) {
-      let newComing = await IWillCome.create(req.body);
-      res.json(newComing);
+    if (attendees.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No attendees found for this event." });
     }
 
-    let newComing = await IWillCome.create(req.body);
+    res.json(attendees);
+  } catch (error) {
+    next(error);
+  }
+});
+//CREATE JOINING MENTION BY EVENT
+router.post("/", async (req, res, next) => {
+  try {
+    const { eventId, creator } = req.body;
+    let isAlreadyJoining = await IWillCome.findOne({
+      eventId: eventId,
+      creator: creator,
+    });
+    if (isAlreadyJoining) {
+      return res
+        .status(409)
+        .json({ message: "You're already joining this event." });
+    }
+    let newComing = await IWillCome.create({
+      creator: creator,
+      eventId: eventId,
+    });
     res.json(newComing);
   } catch (error) {
     next(error);
   }
 });
-
-router.delete("/:eventId", async (req, res, next) => {
+//DELETE A JOINING MENTION
+router.delete("/", async (req, res, next) => {
   try {
     let joignersToDelete = await IWillCome.findOneAndDelete({
-      eventId: req.params.eventId,
-      creator: req.body.userId,
+      eventId: req.body.eventId,
+      creator: req.body.creator,
     });
     if (!joignersToDelete) {
       res.status(404).json({ message: "nothing found to delete" });
