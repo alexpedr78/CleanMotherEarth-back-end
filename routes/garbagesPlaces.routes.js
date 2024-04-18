@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 // models
 const garbagePlace = require("../models/GarbagePlace.model");
 //middlewares
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const isAuthenticated = require("../middlewares/IsAuthenticated");
 
 const GarbagePlace = require("../models/GarbagePlace.model");
 

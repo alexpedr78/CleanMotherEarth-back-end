@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 // models
 const IWillCome = require("../models/IWillCome.model");
 //middlewares
-const isAuthenticated = require("../middlewares/isAuthenticated");
+const isAuthenticated = require("./../middlewares/IsAuthenticated");
 
 //GET ALL JOIGNERS MENTIONS
 router.use(isAuthenticated);

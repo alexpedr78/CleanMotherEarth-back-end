@@ -5,8 +5,8 @@ const jwt = require("jsonwebtoken");
 ///models
 const Comment = require("../models/Comment.model");
 ///middlewares
-const isAuthenticated = require("../middlewares/isAuthenticated");
-const isAdmin = require("../middlewares/IsAdmin");
+const isAuthenticated = require("../middlewares/IsAuthenticated.js");
+const isAdmin = require("../middlewares/IsAdmin.js");
 ///routes
 //GET ALL COMMENTS FOR ADMIN ONLY
 router.use(isAuthenticated);
