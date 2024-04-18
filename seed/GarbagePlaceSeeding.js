@@ -13,27 +13,27 @@ const garbagePlaceData = [
   {
     name: "plastic2",
     creator: "66216e551e95cd67f6f1ef20",
-    description: "mmmh",
+    description: "ooooh",
     position: { lat: Number(48.9821233), long: Number(1.9735699) },
   },
   {
     name: "plastic1",
     creator: "66216e551e95cd67f6f1ef20",
-    description: "mmmh",
+    description: "iiih",
     position: { lat: Number(48.9820233), long: Number(1.9734699) },
   },
 
   {
     name: "plastic3",
     creator: "66216e551e95cd67f6f1ef20",
-    description: "mmmh",
+    description: "beurk",
     position: { lat: Number(48.9822233), long: Number(1.9736699) },
   },
 
   {
     name: "plastic4",
     creator: "66216e551e95cd67f6f1ef20",
-    description: "mmmh",
+    description: "hehe",
     position: { lat: Number(48.9823233), long: Number(1.9737699) },
   },
 ];
