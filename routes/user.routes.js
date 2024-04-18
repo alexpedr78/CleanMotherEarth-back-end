@@ -5,13 +5,16 @@ const User = require("../models/User.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 const IsAdminOrUser = require("../middlewares/IsAdmin");
 //GET ALL USERS ONLY ADMIN
+router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
-    let users = await User.find();
-    if (users.length === 0) {
-      res.status(200).json({ message: "no users found" });
+    console.log(req.currentUserId);
+    let user = await User.findById(req.currentUserId);
+    if (!user) {
+      return res.status(200).json({ message: "no users found" });
     }
-    res.json(users);
+
+    res.json(user);
   } catch (error) {
     next();
   }

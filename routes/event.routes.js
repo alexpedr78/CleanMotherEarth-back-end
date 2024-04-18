@@ -5,9 +5,10 @@ const jwt = require("jsonwebtoken");
 const Event = require("../models/Event.model");
 //middlewares
 const isAuthenticated = require("../middlewares/isAuthenticated");
-
+const isAdmin = require("../middlewares/isAdmin");
 //GET ALL EVENTS FOR ADMIN ONLY
-router.get("/", async (req, res, next) => {
+router.use(isAuthenticated);
+router.get("/", isAdmin, async (req, res, next) => {
   try {
     let events = await Event.find().populate("creator");
     if (events.length === 0) {
@@ -19,9 +20,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 //GET ALL EVENTS BY USER
-router.get("/user/:userId", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    const events = await Event.find({ creator: req.params.userId }).populate(
+    const events = await Event.find({ creator: req.currentUserId }).populate(
       "creator"
     );
     if (events.length === 0) {
@@ -35,6 +36,7 @@ router.get("/user/:userId", async (req, res, next) => {
     next(error);
   }
 });
+
 //GET ONE EVENT
 router.get("/:eventId", async (req, res, next) => {
   try {

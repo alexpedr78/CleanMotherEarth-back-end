@@ -9,10 +9,10 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const isAdmin = require("../middlewares/IsAdmin");
 ///routes
 //GET ALL COMMENTS FOR ADMIN ONLY
-// router.use(isAuthenticated);
-router.get("/", isAdmin, async (req, res, next) => {
+router.use(isAuthenticated);
+router.get("/", isAuthenticated, async (req, res, next) => {
   try {
-    let comments = await Comment.find();
+    let comments = await Comment.findById(req.currentUserId);
     if (comments.length === 0) {
       res.status(200).json({ message: "no comments found" });
     }
@@ -46,17 +46,18 @@ router.get("/event/:eventId", async (req, res, next) => {
   }
 });
 //GET ALL COMMENT BY USER
-router.get("/user/:userId", async (req, res, next) => {
+router.get("/", isAuthenticated, async (req, res, next) => {
   try {
-    let comments = await Comment.find({ creator: req.params.userId });
+    let comments = await Comment.find({ creator: req.currentUserId });
     if (comments.length === 0) {
-      res.status(200).json({ message: "no comments found" });
+      return res.status(200).json({ message: "no comments found" });
     }
     res.json(comments);
   } catch (error) {
     next();
   }
 });
+
 //CREATE A COMMENT
 router.post("/", async (req, res, next) => {
   try {
@@ -67,7 +68,8 @@ router.post("/", async (req, res, next) => {
     next(error);
   }
 });
-// EDIT A COMMENT ONLY FOR CREATOR OR ADMIN
+
+// EDIT A COMMENT
 router.put("/:commentId", async (req, res, next) => {
   try {
     const updatedComment = await Comment.findByIdAndUpdate(
@@ -85,7 +87,7 @@ router.put("/:commentId", async (req, res, next) => {
     next(error);
   }
 });
-// DELETE A COMMENT ONLY FOR CREATOR OR ADMIN
+// DELETE A COMMENT
 router.delete("/:commentId", async (req, res, next) => {
   try {
     let commentToDelete = await Comment.findByIdAndDelete(req.params.commentId);

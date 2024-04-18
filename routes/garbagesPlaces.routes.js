@@ -7,7 +7,9 @@ const garbagePlace = require("../models/GarbagePlace.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 const GarbagePlace = require("../models/GarbagePlace.model");
+
 // GET ALL THE PLACES TO CLEAN
+router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
     let places = await garbagePlace.find().populate("creator");
@@ -20,9 +22,9 @@ router.get("/", async (req, res, next) => {
   }
 });
 //GET ALL THE PLACES LINKED TO ONE USER
-router.get("/user/:userId", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
-    let user = await GarbagePlace.find({ creator: req.params.userId });
+    let user = await GarbagePlace.find({ creator: req.currentUserId });
     if (user.length === 0) {
       res.status(404).json({ message: "no places linked to this user" });
     }

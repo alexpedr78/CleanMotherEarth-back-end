@@ -7,6 +7,7 @@ const IWillCome = require("../models/IWillCome.model");
 const isAuthenticated = require("../middlewares/isAuthenticated");
 
 //GET ALL JOIGNERS MENTIONS
+router.use(isAuthenticated);
 router.get("/user/:userId", async (req, res, next) => {
   try {
     let joigners = await IWillCome.find({
@@ -44,10 +45,10 @@ router.get("/:eventId", async (req, res, next) => {
 //CREATE JOINING MENTION BY EVENT
 router.post("/", async (req, res, next) => {
   try {
-    const { eventId, creator } = req.body;
+    const { eventId } = req.body;
     let isAlreadyJoining = await IWillCome.findOne({
       eventId: eventId,
-      creator: creator,
+      creator: req.currentUserId,
     });
     if (isAlreadyJoining) {
       return res
