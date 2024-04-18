@@ -16,10 +16,9 @@ const garbagePlaceSchema = new Schema(
       type: String,
       default: "plasticBag.jpg",
     },
-    location: {
-      // required: true,
-      long: { type: String },
-      lat: { type: String },
+    position: {
+      long: { type: Number, required: true },
+      lat: { type: Number, required: true },
     },
     description: {
       required: true,

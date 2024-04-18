@@ -2,20 +2,17 @@
 const mongoose = require("mongoose");
 const User = require("../models/User.model"); // Assuming you have a User model defined
 const PORT = 5008;
-
-// Connect to MongoDB
-mongoose.connect(`mongodb://localhost:27017/practicebackend`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const bcrypt = require("bcryptjs");
+require("./../db/index");
 
 // Define data to seed
+const safePassword = bcrypt.hashSync("password123", 12);
 const usersData = [
   {
-    pseudo: "helloTestAlexEI",
+    pseudo: "test",
     name: "AlexEI Doe",
     email: "alexEI@example.com",
-    password: "password123",
+    password: safePassword,
   },
 ];
 

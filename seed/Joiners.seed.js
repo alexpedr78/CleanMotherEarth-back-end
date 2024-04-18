@@ -2,18 +2,12 @@
 const mongoose = require("mongoose");
 const Joigner = require("../models/IWillCome.model"); // Assuming you have a User model defined
 const PORT = 5008;
-
-// Connect to MongoDB
-mongoose.connect(`mongodb://localhost:27017/practicebackend`, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
+require("./../db/index");
 // Define data to seed
 const joinersData = [
   {
-    creator: "661ba103a2b5979d57e0224c",
-    eventId: "661e47bb22c10fd5c20db3cf",
+    creator: "66212e4b171c5b7b4dc2a2e2",
+    eventId: "662131337e9937ee35c0f27a",
   },
 ];
 

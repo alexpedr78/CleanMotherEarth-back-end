@@ -9,7 +9,7 @@ const isAuthenticated = require("../middlewares/IsAuthenticated.js");
 const isAdmin = require("../middlewares/IsAdmin.js");
 ///routes
 //GET ALL COMMENTS FOR ADMIN ONLY
-router.use(isAuthenticated);
+// router.use(isAuthenticated);
 router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     let comments = await Comment.findById(req.currentUserId);
