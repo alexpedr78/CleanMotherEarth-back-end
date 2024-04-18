@@ -3,8 +3,7 @@ const router = require("express").Router();
 const User = require("../models/User.model");
 //middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
-const IsAdminOrUser = require("../middlewares/IsAdmin");
-//GET ALL USERS ONLY ADMIN
+
 router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {

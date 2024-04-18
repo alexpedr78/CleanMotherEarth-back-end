@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const Event = require("../models/Event.model");
 //middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
-
+const isAdmin = require("./../middlewares/IsAdmin");
 //GET ALL EVENTS FOR ADMIN ONLY
 router.use(isAuthenticated);
 router.get("/", isAdmin, async (req, res, next) => {
