@@ -5,10 +5,36 @@ require("./../db/index");
 
 const garbagePlaceData = [
   {
-    name: "caca",
-    creator: "661ba103a2b5979d57e0224c",
-    description: "olala",
+    name: "plaaastic",
+    creator: "66216e551e95cd67f6f1ef20",
+    description: "mmmh",
     position: { lat: Number(48.9820233), long: Number(1.9734699) },
+  },
+  {
+    name: "plastic2",
+    creator: "66216e551e95cd67f6f1ef20",
+    description: "mmmh",
+    position: { lat: Number(48.9821233), long: Number(1.9735699) },
+  },
+  {
+    name: "plastic1",
+    creator: "66216e551e95cd67f6f1ef20",
+    description: "mmmh",
+    position: { lat: Number(48.9820233), long: Number(1.9734699) },
+  },
+
+  {
+    name: "plastic3",
+    creator: "66216e551e95cd67f6f1ef20",
+    description: "mmmh",
+    position: { lat: Number(48.9822233), long: Number(1.9736699) },
+  },
+
+  {
+    name: "plastic4",
+    creator: "66216e551e95cd67f6f1ef20",
+    description: "mmmh",
+    position: { lat: Number(48.9823233), long: Number(1.9737699) },
   },
 ];
 // Insert data into the collection
