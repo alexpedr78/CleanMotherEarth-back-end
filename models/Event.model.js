@@ -24,14 +24,14 @@ const eventSchema = new Schema(
       type: String,
       required: true,
     },
-    locationStartPoint: {
+    position: {
       long: {
-        type: String,
-        // required: true,
+        type: Number,
+        required: true,
       },
       lat: {
-        type: String,
-        // required: true,
+        type: Number,
+        required: true,
       },
     },
   },

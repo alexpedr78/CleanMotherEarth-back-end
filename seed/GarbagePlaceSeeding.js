@@ -34,7 +34,7 @@ const garbagePlaceData = [
     name: "plastic4",
     creator: "66216e551e95cd67f6f1ef20",
     description: "hehe",
-    position: { lat: Number(48.9823233), long: Number(1.9737699) },
+    position: { lat: Number(489823233), long: Number(1.9737699) },
   },
 ];
 // Insert data into the collection

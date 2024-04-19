@@ -8,7 +8,7 @@ const isAuthenticated = require("./../middlewares/IsAuthenticated");
 const isAdmin = require("./../middlewares/IsAdmin");
 //GET ALL EVENTS FOR ADMIN ONLY
 router.use(isAuthenticated);
-router.get("/", isAdmin, async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   try {
     let events = await Event.find().populate("creator");
     if (events.length === 0) {
