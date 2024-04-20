@@ -62,7 +62,6 @@ router.get("/", isAuthenticated, async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     let newComment = await Comment.create(req.body);
-    console.log(newComment);
     res.status(201).json(newComment);
   } catch (error) {
     next(error);

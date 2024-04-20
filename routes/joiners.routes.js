@@ -1,13 +1,25 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const { ObjectId } = require("mongoose");
 // models
 const IWillCome = require("../models/IWillCome.model");
-
 const isAuthenticated = require("../middlewares/IsAuthenticated");
-
+const objectId = new ObjectId();
 //GET ALL JOIGNERS MENTIONS
 router.use(isAuthenticated);
+
+router.get("/", async (req, res, next) => {
+  try {
+    let allMentions = await IWillCome.find({ creator: req.currentUserId });
+    if (allMentions.length > 0) {
+      res.json(allMentions);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 router.get("/user/:userId", async (req, res, next) => {
   try {
     let joigners = await IWillCome.find({
@@ -45,9 +57,9 @@ router.get("/:eventId", async (req, res, next) => {
 //CREATE JOINING MENTION BY EVENT
 router.post("/", async (req, res, next) => {
   try {
-    const { eventId } = req.body;
+    console.log(req.body);
     let isAlreadyJoining = await IWillCome.findOne({
-      eventId: eventId,
+      eventId: req.body._id,
       creator: req.currentUserId,
     });
     if (isAlreadyJoining) {
@@ -56,20 +68,21 @@ router.post("/", async (req, res, next) => {
         .json({ message: "You're already joining this event." });
     }
     let newComing = await IWillCome.create({
-      creator: creator,
-      eventId: eventId,
+      creator: req.currentUserId,
+      eventId: req.body._id,
     });
+
     res.json(newComing);
   } catch (error) {
     next(error);
   }
 });
 //DELETE A JOINING MENTION
-router.delete("/", async (req, res, next) => {
+router.delete("/:eventId", async (req, res, next) => {
   try {
     let joignersToDelete = await IWillCome.findOneAndDelete({
-      eventId: req.body.eventId,
-      creator: req.body.creator,
+      eventId: req.params.eventId,
+      creator: req.currentUserId,
     });
     if (!joignersToDelete) {
       res.status(404).json({ message: "nothing found to delete" });

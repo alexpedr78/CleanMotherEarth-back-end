@@ -10,6 +10,6 @@ router.use("/events", require("./event.routes"));
 
 router.use("/comments", require("./comment.routes"));
 
-router.use("/joigning", require("./joiners.routes"));
+router.use("/joining", require("./joiners.routes"));
 
 module.exports = router;

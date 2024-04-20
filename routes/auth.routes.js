@@ -53,7 +53,6 @@ router.post(
 router.post("/login", async (req, res, next) => {
   try {
     const { pseudo, password } = req.body;
-    console.log("password:", password);
     const foundUser = await User.findOne(
       { pseudo },
       { password: 1, pseudo: 1 }

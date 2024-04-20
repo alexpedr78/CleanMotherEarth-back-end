@@ -10,7 +10,7 @@ const isAdmin = require("./../middlewares/IsAdmin");
 router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
-    let events = await Event.find().populate("creator");
+    let events = await Event.find();
     if (events.length === 0) {
       res.status(200).json({ message: "no events found" });
     }
