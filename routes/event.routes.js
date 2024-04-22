@@ -22,9 +22,7 @@ router.get("/", async (req, res, next) => {
 //GET ALL EVENTS BY USER
 router.get("/", async (req, res, next) => {
   try {
-    const events = await Event.find({ creator: req.currentUserId }).populate(
-      "creator"
-    );
+    const events = await Event.find({ creator: req.currentUserId });
     if (events.length === 0) {
       return res
         .status(200)

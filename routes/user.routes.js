@@ -1,9 +1,12 @@
 const router = require("express").Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const SALT = 12;
 // Models
 const User = require("../models/User.model");
 //middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
-
+const fileUploader = require("./../config/cloudinary.config.js");
 router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
@@ -39,31 +42,48 @@ router.post("/", async (req, res, next) => {
   }
 });
 //EDIT A USER ONLY CREATOR
-router.put("/:userId", async (req, res, next) => {
+router.put("/", fileUploader.single("avatar"), async (req, res, next) => {
   try {
-    const { name, pseudo, email, avatar } = req.body;
-    const updateData = {};
-    if (avatar) updateData.avatar = avatar;
-    if (name) updateData.name = name;
-    if (pseudo) updateData.pseudo = pseudo;
-    if (email) updateData.email = email;
+    const { pseudo, email, name, password } = req.body;
+    // const filePath = req.file.path;
+
+    if (!password) {
+      return res.status(400).json({ message: "Password is required" });
+    }
+
+    const foundUser = await User.findOne({ email });
+    console.log(req.currentUserId);
+    console.log(foundUser);
+    if (foundUser && foundUser._id.toString() !== req.currentUserId) {
+      return res.status(400).json({ message: "This email is already used" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, SALT);
+
     const editedUser = await User.findByIdAndUpdate(
-      req.params.userId,
-      updateData,
+      req.currentUserId,
+      {
+        name,
+        pseudo,
+        email,
+        password: hashedPassword,
+        // avatar: filePath,
+      },
       { new: true }
     );
-    if (!editedUser) {
-      return res.status(404).json({ message: "User not found." });
-    }
-    res.json(editedUser);
+
+    res
+      .status(200)
+      .json({ message: "User updated successfully.", user: editedUser });
   } catch (error) {
     next(error);
   }
 });
+
 //DELETE A USER ONLY ADMIN
-router.delete("/:userId", async (req, res, next) => {
+router.delete("/", async (req, res, next) => {
   try {
-    let userToDelete = await User.findByIdAndDelete(req.params.userId);
+    let userToDelete = await User.findByIdAndDelete(req.currentUserId);
     if (!userToDelete) {
       return res.status(404).json({ message: "User not found." });
     }

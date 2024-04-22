@@ -12,7 +12,7 @@ const isAdmin = require("../middlewares/IsAdmin.js");
 // router.use(isAuthenticated);
 router.get("/", isAuthenticated, async (req, res, next) => {
   try {
-    let comments = await Comment.findById(req.currentUserId);
+    let comments = await Comment.findOne({ creator: req.currentUserId });
     if (comments.length === 0) {
       res.status(200).json({ message: "no comments found" });
     }
@@ -46,7 +46,7 @@ router.get("/event/:eventId", async (req, res, next) => {
   }
 });
 //GET ALL COMMENT BY USER
-router.get("/", isAuthenticated, async (req, res, next) => {
+router.get("/YourComments", isAuthenticated, async (req, res, next) => {
   try {
     let comments = await Comment.find({ creator: req.currentUserId });
     if (comments.length === 0) {

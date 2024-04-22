@@ -10,9 +10,12 @@ const objectId = new ObjectId();
 //GET ALL JOIGNERS MENTIONS
 router.use(isAuthenticated);
 
-router.get("/", async (req, res, next) => {
+router.get("/yourEvents", async (req, res, next) => {
   try {
-    let allMentions = await IWillCome.find({ creator: req.currentUserId });
+    let allMentions = await IWillCome.find({
+      creator: req.currentUserId,
+    }).populate("eventId");
+    console.log(allMentions);
     if (allMentions.length > 0) {
       res.json(allMentions);
     }

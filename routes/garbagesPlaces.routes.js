@@ -22,11 +22,11 @@ router.get("/", async (req, res, next) => {
   }
 });
 //GET ALL THE PLACES LINKED TO ONE USER
-router.get("/", async (req, res, next) => {
+router.get("/yourPlaces", async (req, res, next) => {
   try {
     let user = await GarbagePlace.find({ creator: req.currentUserId });
     if (user.length === 0) {
-      res.status(404).json({ message: "no places linked to this user" });
+      res.status(201).json({ message: "no places linked to this user" });
     }
     res.json(user);
   } catch (error) {
@@ -36,9 +36,10 @@ router.get("/", async (req, res, next) => {
 //GET ONE PLACE
 router.get("/:garbagePlaceId", async (req, res, next) => {
   try {
-    let place = await garbagePlace
+    const place = await garbagePlace
       .findById(req.params.garbagePlaceId)
       .populate("creator");
+    console.log(req.params.garbagePlaceId);
 
     if (!place) {
       return res
@@ -54,7 +55,15 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
 //CREATE A PLACE
 router.post("/", async (req, res, next) => {
   try {
-    let newGarbagePlace = await GarbagePlace.create(req.body);
+    const { name, description, position, photo } = req.body;
+    let newGarbagePlace = await GarbagePlace.create({
+      creator: req.currentUserId,
+      position: { lat: position.lat, long: position.long },
+      name,
+      position,
+      description,
+      // photo,
+    });
     res.status(201).json(newGarbagePlace);
   } catch (error) {
     next(error);
