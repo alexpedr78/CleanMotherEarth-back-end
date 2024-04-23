@@ -45,30 +45,33 @@ router.post("/", async (req, res, next) => {
 router.put("/", fileUploader.single("avatar"), async (req, res, next) => {
   try {
     const { pseudo, email, name, password } = req.body;
-    // const filePath = req.file.path;
 
-    if (!password) {
-      return res.status(400).json({ message: "Password is required" });
-    }
-
+    // if (!password) {
+    //   return res.status(400).json({ message: "Password is required" });
+    // }
     const foundUser = await User.findOne({ email });
-    console.log(req.currentUserId);
-    console.log(foundUser);
     if (foundUser && foundUser._id.toString() !== req.currentUserId) {
       return res.status(400).json({ message: "This email is already used" });
     }
-
-    const hashedPassword = await bcrypt.hash(password, SALT);
+    // const hashedPassword = await bcrypt.hash(password, SALT);
+    let userInfo = {};
+    if (pseudo) {
+      userInfo.pseudo = pseudo;
+    }
+    if (email) {
+      userInfo.email = email;
+    }
+    if (name) {
+      userInfo.name = name;
+    }
+    if (req.file && req.file.path.length > 0) {
+      const filePath = req.file.path;
+      userInfo.avatar = filePath;
+    }
 
     const editedUser = await User.findByIdAndUpdate(
       req.currentUserId,
-      {
-        name,
-        pseudo,
-        email,
-        password: hashedPassword,
-        // avatar: filePath,
-      },
+      userInfo,
       { new: true }
     );
 

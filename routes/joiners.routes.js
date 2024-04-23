@@ -60,7 +60,6 @@ router.get("/:eventId", async (req, res, next) => {
 //CREATE JOINING MENTION BY EVENT
 router.post("/", async (req, res, next) => {
   try {
-    console.log(req.body);
     let isAlreadyJoining = await IWillCome.findOne({
       eventId: req.body._id,
       creator: req.currentUserId,
