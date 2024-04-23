@@ -5,9 +5,7 @@ const StaticSchema = new Schema(
     name: {
       type: String,
     },
-    eventId: {
-      type: String,
-    },
+
     description: {
       type: String,
     },
@@ -20,6 +18,6 @@ const StaticSchema = new Schema(
   }
 );
 
-const Comment = model("Comment", commentSchema);
+const Static = model("Static", StaticSchema);
 
-module.exports = Comment;
+module.exports = Static;
