@@ -1,10 +1,7 @@
-// Import necessary modules
 const mongoose = require("mongoose");
-const Event = require("../models/Event.model.js"); // Assuming you have a User model defined
-const PORT = 5008;
+const Event = require("../models/Event.model.js");
 require("./../db/index");
 
-// Define data to seed
 const eventsData = [
   {
     name: "cleaning day",
@@ -14,13 +11,12 @@ const eventsData = [
   },
 ];
 
-// Insert data into the collection
 Event.insertMany(eventsData)
   .then(() => {
     console.log("Data seeding complete");
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   })
   .catch((error) => {
     console.error("Error seeding data:", error);
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   });

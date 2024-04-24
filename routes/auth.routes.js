@@ -15,23 +15,16 @@ router.post(
   fileUploader.single("avatar"),
   async (req, res, next) => {
     try {
-      console.log(req.body);
-      console.log(req.file);
-
       const { pseudo, email, name, password } = req.body;
       const filePath = req.file.path;
-
       if (!password) {
         return res.status(400).json({ message: "password is required" });
       }
       const foundUser = await User.findOne({ email });
-
       if (foundUser) {
         return res.status(400).json({ message: "This email is already used" });
       }
-
       const hashedPassword = await bcrypt.hash(password, SALT);
-
       const createdUser = await User.create({
         name,
         pseudo,
@@ -39,7 +32,6 @@ router.post(
         password: hashedPassword,
         avatar: filePath,
       });
-
       res.status(201).json({
         message: "User created",
         id: createdUser._id,
@@ -69,7 +61,6 @@ router.post("/login", async (req, res, next) => {
       algorithm: "HS256",
       expiresIn: "1d",
     });
-
     res.json({ authToken: token, id: foundUser.id });
   } catch (error) {
     next(error);

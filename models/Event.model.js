@@ -14,7 +14,7 @@ const eventSchema = new Schema(
     },
     timeStart: {
       type: Date,
-      // required: true,
+      required: true,
     },
     photo: {
       type: String,

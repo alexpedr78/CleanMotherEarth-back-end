@@ -1,11 +1,9 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 // models
 const garbagePlace = require("../models/GarbagePlace.model");
 //middlewares
 const isAuthenticated = require("../middlewares/IsAuthenticated");
-
+const fileUploader = require("./../config/cloudinary.config.js");
 const GarbagePlace = require("../models/GarbagePlace.model");
 
 // GET ALL THE PLACES TO CLEAN
@@ -39,36 +37,47 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
     const place = await garbagePlace
       .findById(req.params.garbagePlaceId)
       .populate("creator");
-    console.log(req.params.garbagePlaceId);
-
     if (!place) {
       return res
         .status(404)
         .json({ message: "No garbage place found with the specified ID." });
     }
-
     res.json(place);
   } catch (error) {
     next(error);
   }
 });
 //CREATE A PLACE
-router.post("/", async (req, res, next) => {
+router.post("/", fileUploader.single("photo"), async (req, res, next) => {
   try {
-    const { name, description, position, photo } = req.body;
-    let newGarbagePlace = await GarbagePlace.create({
-      creator: req.currentUserId,
-      position: { lat: position.lat, long: position.long },
-      name,
-      position,
-      description,
-      // photo,
-    });
-    res.status(201).json(newGarbagePlace);
+    const { name, description, position } = req.body;
+    let Placedata = {};
+    if (position) {
+      Placedata.position = JSON.parse(position);
+    }
+    if (description) {
+      Placedata.description = description;
+    }
+    if (name) {
+      Placedata.name = name;
+    }
+    if (req.file && req.file.path.length > 0) {
+      const filePath = req.file.path;
+      Placedata.photo = filePath;
+    }
+
+    Placedata.creator = req.currentUserId;
+
+    const newPlace = await garbagePlace.create(Placedata);
+
+    res
+      .status(200)
+      .json({ message: "PLace created successfully.", place: newPlace });
   } catch (error) {
     next(error);
   }
 });
+
 // EDIT A PLACE
 router.put("/:garbagePlaceId", async (req, res, next) => {
   try {

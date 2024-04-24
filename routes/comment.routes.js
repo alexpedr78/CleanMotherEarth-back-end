@@ -1,15 +1,11 @@
-//basic imports
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 ///models
 const Comment = require("../models/Comment.model");
 ///middlewares
 const isAuthenticated = require("../middlewares/IsAuthenticated.js");
-const isAdmin = require("../middlewares/IsAdmin.js");
-///routes
+
 //GET ALL COMMENTS FOR ADMIN ONLY
-// router.use(isAuthenticated);
+router.use(isAuthenticated);
 router.get("/", isAuthenticated, async (req, res, next) => {
   try {
     let comments = await Comment.findOne({ creator: req.currentUserId });

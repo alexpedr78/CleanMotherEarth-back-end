@@ -1,9 +1,7 @@
-// Import necessary modules
 const mongoose = require("mongoose");
-const Joigner = require("../models/IWillCome.model"); // Assuming you have a User model defined
+const Joigner = require("../models/IWillCome.model");
 const PORT = 5008;
 require("./../db/index");
-// Define data to seed
 const joinersData = [
   {
     creator: "66212e4b171c5b7b4dc2a2e2",
@@ -11,13 +9,12 @@ const joinersData = [
   },
 ];
 
-// Insert data into the collection
 Joigner.insertMany(joinersData)
   .then(() => {
     console.log("Data seeding complete");
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   })
   .catch((error) => {
     console.error("Error seeding data:", error);
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   });

@@ -12,15 +12,7 @@ async function isAdmin(req, res, next) {
     if (currentUser.role === "admin") {
       return next();
     }
-    // const { ID } = req.params;
-    // const foundComment = await Comment.findOne({
-    //   _id: ID,
-    //   user: req.body.currentUserId,
-    // });
-    // console.log(foundComment);
-    // if (foundComment) {
-    //   return next();
-    // }
+
     res.status(403).json({ message: "Unauthorized" });
   } catch (error) {
     next(error);

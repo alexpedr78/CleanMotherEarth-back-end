@@ -1,7 +1,4 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const SALT = 12;
 // Models
 const User = require("../models/User.model");
 //middlewares
@@ -10,8 +7,19 @@ const fileUploader = require("./../config/cloudinary.config.js");
 router.use(isAuthenticated);
 router.get("/", async (req, res, next) => {
   try {
-    console.log(req.currentUserId);
     let user = await User.findById(req.currentUserId);
+    if (!user) {
+      return res.status(200).json({ message: "no users found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    next();
+  }
+});
+router.get("/admin", async (req, res, next) => {
+  try {
+    let user = await User.find();
     if (!user) {
       return res.status(200).json({ message: "no users found" });
     }
@@ -45,15 +53,10 @@ router.post("/", async (req, res, next) => {
 router.put("/", fileUploader.single("avatar"), async (req, res, next) => {
   try {
     const { pseudo, email, name, password } = req.body;
-
-    // if (!password) {
-    //   return res.status(400).json({ message: "Password is required" });
-    // }
     const foundUser = await User.findOne({ email });
     if (foundUser && foundUser._id.toString() !== req.currentUserId) {
       return res.status(400).json({ message: "This email is already used" });
     }
-    // const hashedPassword = await bcrypt.hash(password, SALT);
     let userInfo = {};
     if (pseudo) {
       userInfo.pseudo = pseudo;
@@ -68,13 +71,11 @@ router.put("/", fileUploader.single("avatar"), async (req, res, next) => {
       const filePath = req.file.path;
       userInfo.avatar = filePath;
     }
-
     const editedUser = await User.findByIdAndUpdate(
       req.currentUserId,
       userInfo,
       { new: true }
     );
-
     res
       .status(200)
       .json({ message: "User updated successfully.", user: editedUser });
@@ -87,6 +88,17 @@ router.put("/", fileUploader.single("avatar"), async (req, res, next) => {
 router.delete("/", async (req, res, next) => {
   try {
     let userToDelete = await User.findByIdAndDelete(req.currentUserId);
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    res.status(204).json({ message: "User deleted successfully." });
+  } catch (error) {
+    next(error);
+  }
+});
+router.delete("/:userId", async (req, res, next) => {
+  try {
+    let userToDelete = await User.findByIdAndDelete(req.params.userId);
     if (!userToDelete) {
       return res.status(404).json({ message: "User not found." });
     }

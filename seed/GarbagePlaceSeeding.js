@@ -1,4 +1,3 @@
-// Import necessary modules
 const mongoose = require("mongoose");
 const GarbagePlace = require("../models/GarbagePlace.model.js");
 require("./../db/index");
@@ -37,13 +36,13 @@ const garbagePlaceData = [
     position: { lat: Number(489823233), long: Number(1.9737699) },
   },
 ];
-// Insert data into the collection
+
 GarbagePlace.insertMany(garbagePlaceData)
   .then(() => {
     console.log("Data seeding complete");
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   })
   .catch((error) => {
     console.error("Error seeding data:", error);
-    mongoose.connection.close(); // Close the MongoDB connection
+    mongoose.connection.close();
   });

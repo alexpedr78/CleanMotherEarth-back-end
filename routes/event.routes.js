@@ -1,14 +1,12 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 // models
 const Event = require("../models/Event.model");
 //middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
-const isAdmin = require("./../middlewares/IsAdmin");
+const fileUploader = require("./../config/cloudinary.config.js");
 //GET ALL EVENTS FOR ADMIN ONLY
 router.use(isAuthenticated);
-router.get("/", async (req, res, next) => {
+router.get("/admin", async (req, res, next) => {
   try {
     let events = await Event.find();
     if (events.length === 0) {
@@ -48,14 +46,34 @@ router.get("/:eventId", async (req, res, next) => {
   }
 });
 //CREATE AN EVENT
-router.post("/", async (req, res, next) => {
+router.post("/", fileUploader.single("photo"), async (req, res, next) => {
   try {
-    let newEvent = await Event.create(req.body);
-    res.status(201).json(newEvent);
+    const { description, name, timeStart, position } = req.body;
+    let eventData = {};
+    if (timeStart) {
+      eventData.timeStart = timeStart;
+    }
+    if (description) {
+      eventData.description = description;
+    }
+    if (name) {
+      eventData.name = name;
+    }
+    if (req.file && req.file.path.length > 0) {
+      const filePath = req.file.path;
+      eventData.photo = filePath;
+    }
+    eventData.creator = req.currentUserId;
+    eventData.position = JSON.parse(position);
+    const newEvent = await Event.create(eventData);
+    res
+      .status(200)
+      .json({ message: "Event created successfully.", event: newEvent });
   } catch (error) {
     next(error);
   }
 });
+
 //EDIT AN EVENT ONLY ADMIN OR CREATOR
 router.put("/:eventId", async (req, res, next) => {
   try {
@@ -68,7 +86,6 @@ router.put("/:eventId", async (req, res, next) => {
     if (photo) eventToEdit.name = photo;
     if (description) eventToEdit.description = description;
     if (location) eventToEdit.location = location;
-
     await eventToEdit.save();
     res.json(eventToEdit);
   } catch (error) {

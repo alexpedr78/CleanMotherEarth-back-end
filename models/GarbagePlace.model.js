@@ -11,8 +11,11 @@ const garbagePlaceSchema = new Schema(
       ref: "User",
       required: true,
     },
+    cleaned: {
+      type: Boolean,
+      default: false,
+    },
     photo: {
-      // required: true,
       type: String,
       default: "plasticBag.jpg",
     },

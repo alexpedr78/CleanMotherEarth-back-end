@@ -1,23 +1,32 @@
 const router = require("express").Router();
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
-const { ObjectId } = require("mongoose");
 // models
 const IWillCome = require("../models/IWillCome.model");
 const isAuthenticated = require("../middlewares/IsAuthenticated");
-const objectId = new ObjectId();
-//GET ALL JOIGNERS MENTIONS
-router.use(isAuthenticated);
 
+router.use(isAuthenticated);
+//GET ALL JOIGNERS MENTIONS
+router.get("/", async (req, res, next) => {
+  try {
+    let allMentions = await IWillCome.find({
+      creator: req.currentUserId,
+    });
+
+    if (allMentions.length > 0) {
+      res.json(allMentions);
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 router.get("/yourEvents", async (req, res, next) => {
   try {
     let allMentions = await IWillCome.find({
       creator: req.currentUserId,
     }).populate("eventId");
-    console.log(allMentions);
     if (allMentions.length > 0) {
       res.json(allMentions);
+    } else {
+      res.json({ message: "no event yet" });
     }
   } catch (error) {
     next(error);
@@ -82,6 +91,20 @@ router.post("/", async (req, res, next) => {
 //DELETE A JOINING MENTION
 router.delete("/:eventId", async (req, res, next) => {
   try {
+    let joignersToDelete = await IWillCome.findByIdAndDelete(
+      req.params.eventId
+    );
+    if (!joignersToDelete) {
+      res.status(404).json({ message: "nothing found to delete" });
+    } else {
+      res.json({ message: "all good it's deleted" });
+    }
+  } catch (error) {
+    next();
+  }
+});
+router.delete("/map/:eventId", async (req, res, next) => {
+  try {
     let joignersToDelete = await IWillCome.findOneAndDelete({
       eventId: req.params.eventId,
       creator: req.currentUserId,
@@ -95,5 +118,4 @@ router.delete("/:eventId", async (req, res, next) => {
     next();
   }
 });
-
 module.exports = router;
