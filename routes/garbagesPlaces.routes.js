@@ -49,8 +49,9 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
 });
 router.get("/cleaned/all", async (req, res, next) => {
   try {
-    const place = await garbagePlace.find({ cleaned: "true" });
-    // .populate("creator");
+    const place = await garbagePlace
+      .find({ cleaned: "true" })
+      .populate("creator");
     // if (!place) {
     //   return res
     //     .status(404)
