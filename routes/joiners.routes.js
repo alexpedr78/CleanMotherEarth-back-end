@@ -2,6 +2,7 @@ const router = require("express").Router();
 // models
 const IWillCome = require("../models/IWillCome.model");
 const isAuthenticated = require("../middlewares/IsAuthenticated");
+const { populate } = require("../models/GarbagePlace.model");
 
 router.use(isAuthenticated);
 //GET ALL JOIGNERS MENTIONS
@@ -54,7 +55,7 @@ router.get("/:eventId", async (req, res, next) => {
   try {
     let attendees = await IWillCome.find({
       eventId: req.params.eventId,
-    });
+    }).populate("creator");
     if (attendees.length === 0) {
       return res
         .status(404)

@@ -75,23 +75,36 @@ router.post("/", fileUploader.single("photo"), async (req, res, next) => {
 });
 
 //EDIT AN EVENT ONLY ADMIN OR CREATOR
-router.put("/:eventId", async (req, res, next) => {
+router.put("/:eventId", fileUploader.single("file"), async (req, res, next) => {
   try {
-    const { name, photo, description, location } = req.body;
-    let eventToEdit = await Event.findById(req.params.eventId);
-    if (!eventToEdit) {
-      return res.status(404).json({ message: "No event found." });
+    let eventToEdit = {}; // Define eventToEdit object
+
+    const { name, description, location } = req.body;
+
+    // Check if req.file exists before accessing its properties
+    if (req.file && req.file.path) {
+      eventToEdit.photo = req.file.path;
     }
+
+    // Populate eventToEdit with other properties
     if (name) eventToEdit.name = name;
-    if (photo) eventToEdit.name = photo;
     if (description) eventToEdit.description = description;
     if (location) eventToEdit.location = location;
-    await eventToEdit.save();
+
+    // Update the event in the database
+    eventToEdit = await Event.findByIdAndUpdate(
+      req.params.eventId,
+      eventToEdit,
+      { new: true }
+    );
+
+    // Send the updated event as the response
     res.json(eventToEdit);
   } catch (error) {
     next(error);
   }
 });
+
 //DELETE AN EVENT ONLY ADMIN OR CREATOR
 router.delete("/:eventId", async (req, res, next) => {
   try {

@@ -47,6 +47,20 @@ router.get("/:garbagePlaceId", async (req, res, next) => {
     next(error);
   }
 });
+router.get("/cleaned/all", async (req, res, next) => {
+  try {
+    const place = await garbagePlace.find({ cleaned: "true" });
+    // .populate("creator");
+    // if (!place) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No garbage place found cleaned." });
+    // }
+    res.json(place);
+  } catch (error) {
+    next(error);
+  }
+});
 //CREATE A PLACE
 router.post("/", fileUploader.single("photo"), async (req, res, next) => {
   try {
@@ -79,28 +93,36 @@ router.post("/", fileUploader.single("photo"), async (req, res, next) => {
 });
 
 // EDIT A PLACE
-router.put("/:garbagePlaceId", async (req, res, next) => {
-  try {
-    let { name, creator, description } = req.body;
-    let editedData = {};
-    if (name) editedData.name = name;
-    if (creator) editedData.creator = creator;
-    if (description) editedData.description = description;
+router.put(
+  "/:garbagePlaceId",
+  fileUploader.single("file"),
+  async (req, res, next) => {
+    try {
+      let { name, creator, description, cleaned } = req.body;
+      let editedData = {};
+      if (name) editedData.name = name;
+      if (cleaned) editedData.cleaned = cleaned;
+      if (creator) editedData.creator = creator;
+      if (description) editedData.description = description;
+      let file = req.file.path;
+      if (req.file.path) {
+        editedData.photo = file;
+      }
+      let placeToEdit = await garbagePlace.findByIdAndUpdate(
+        req.params.garbagePlaceId,
+        editedData,
+        { new: true }
+      );
 
-    let placeToEdit = await garbagePlace.findByIdAndUpdate(
-      req.params.garbagePlaceId,
-      editedData,
-      { new: true }
-    );
-
-    if (!placeToEdit) {
-      res.status(404).json({ message: "no places found" });
+      if (!placeToEdit) {
+        res.status(404).json({ message: "no places found" });
+      }
+      res.json(placeToEdit);
+    } catch (error) {
+      next();
     }
-    res.json(placeToEdit);
-  } catch (error) {
-    next();
   }
-});
+);
 //DELETE A PLACE
 router.delete("/:garbagePlaceId", async (req, res, next) => {
   try {
