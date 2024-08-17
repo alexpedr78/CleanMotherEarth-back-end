@@ -45,27 +45,32 @@ router.post(
 router.post("/login", async (req, res, next) => {
   try {
     const { pseudo, password } = req.body;
-    const foundUser = await User.findOne(
-      { pseudo },
-      { password: 1, pseudo: 1 }
-    );
+    console.log("Login request received:", { pseudo, password });
+    const foundUser = await User.findOne({ pseudo }, { password: 1, pseudo: 1 });
 
     if (!foundUser) {
+      console.log("No users found");
       return res.status(400).json({ message: "No users found" });
     }
+
     const correctPassword = await bcrypt.compare(password, foundUser.password);
     if (!correctPassword) {
+      console.log("Wrong password");
       return res.status(400).json({ message: "Wrong password" });
     }
+
     const token = jwt.sign({ id: foundUser._id }, process.env.TOKEN_SECRET, {
       algorithm: "HS256",
       expiresIn: "1d",
     });
+    console.log("Login successful, token generated:", token);
     res.json({ authToken: token, id: foundUser.id });
   } catch (error) {
+    console.error("Error during login:", error);
     next(error);
   }
 });
+
 //VERIFY
 router.get("/verify", isAuthenticated, async (req, res, next) => {
   try {
