@@ -4,6 +4,7 @@ const Event = require("../models/Event.model");
 //middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
 const fileUploader = require("./../config/cloudinary.config.js");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 //GET ALL EVENTS FOR ADMIN ONLY
 router.use(isAuthenticated);
 router.get("/admin", async (req, res, next) => {
@@ -33,10 +34,24 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// GET ALL THE EVENTS ABOUT ONE PLACE
+router.get("/place/:placeId", async (req, res, next) => {
+  try {
+    let events = await Event.find({ place: req.params.placeId });
+    if (!events) {
+      res.status(200).json({ message: "no events matches" });
+    }
+    res.json(events);
+  } catch (error) {
+    next();
+  }
+});
 //GET ONE EVENT
 router.get("/:eventId", async (req, res, next) => {
+  console.log(req.params.eventId);
   try {
     let event = await Event.findById(req.params.eventId);
+
     if (!event) {
       res.status(200).json({ message: "no events matches" });
     }
@@ -48,7 +63,7 @@ router.get("/:eventId", async (req, res, next) => {
 //CREATE AN EVENT
 router.post("/", fileUploader.single("photo"), async (req, res, next) => {
   try {
-    const { description, name, timeStart, position } = req.body;
+    const { description, name, timeStart, position, place, creator } = req.body;
     let eventData = {};
     if (timeStart) {
       eventData.timeStart = timeStart;
@@ -59,11 +74,17 @@ router.post("/", fileUploader.single("photo"), async (req, res, next) => {
     if (name) {
       eventData.name = name;
     }
+    if (place) {
+      eventData.place = place;
+    }
+    if (creator) {
+      eventData.creator = creator;
+    }
     if (req.file && req.file.path.length > 0) {
       const filePath = req.file.path;
       eventData.photo = filePath;
     }
-    eventData.creator = req.currentUserId;
+    // eventData.creator = req.currentUserId;
     eventData.position = JSON.parse(position);
     const newEvent = await Event.create(eventData);
     res

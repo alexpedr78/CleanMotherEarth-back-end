@@ -7,6 +7,11 @@ const eventSchema = new Schema(
       required: true,
       trim: true,
     },
+    place: {
+      type: Schema.Types.ObjectId,
+      ref: "GarbagePlace",
+      required: true,
+    },
     creator: {
       type: Schema.Types.ObjectId,
       ref: "User",
