@@ -29,7 +29,6 @@ module.exports = (app) => {
       credentials: true,
     })
   );
-
   // In development environment the app logs
   app.use(logger("dev"));
 
