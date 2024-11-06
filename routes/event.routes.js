@@ -1,7 +1,5 @@
 const router = require("express").Router();
-// models
 const Event = require("../models/Event.model");
-//middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
 const fileUploader = require("./../config/cloudinary.config.js");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");

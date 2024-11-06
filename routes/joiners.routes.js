@@ -1,5 +1,4 @@
 const router = require("express").Router();
-// models
 const IWillCome = require("../models/IWillCome.model");
 const isAuthenticated = require("../middlewares/IsAuthenticated");
 const { populate } = require("../models/GarbagePlace.model");

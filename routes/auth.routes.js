@@ -1,15 +1,12 @@
-// import
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const fileUploader = require("./../config/cloudinary.config.js");
-// models
 const User = require("../models/User.model");
-//middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
 const SALT = 12;
+
 //SIGN UP
-//! we are prefixed with /api/auth
 router.post(
   "/signup",
   fileUploader.single("avatar"),

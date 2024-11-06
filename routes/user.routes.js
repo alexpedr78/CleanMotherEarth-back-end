@@ -1,7 +1,5 @@
 const router = require("express").Router();
-// Models
 const User = require("../models/User.model");
-//middlewares
 const isAuthenticated = require("./../middlewares/IsAuthenticated");
 const fileUploader = require("./../config/cloudinary.config.js");
 router.use(isAuthenticated);

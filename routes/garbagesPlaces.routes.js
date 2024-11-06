@@ -1,7 +1,5 @@
 const router = require("express").Router();
-// models
 const garbagePlace = require("../models/GarbagePlace.model");
-//middlewares
 const isAuthenticated = require("../middlewares/IsAuthenticated");
 const fileUploader = require("./../config/cloudinary.config.js");
 const GarbagePlace = require("../models/GarbagePlace.model");

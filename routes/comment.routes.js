@@ -1,7 +1,5 @@
 const router = require("express").Router();
-///models
 const Comment = require("../models/Comment.model");
-///middlewares
 const isAuthenticated = require("../middlewares/IsAuthenticated.js");
 
 //GET ALL COMMENTS FOR ADMIN ONLY
