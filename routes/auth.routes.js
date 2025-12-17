@@ -12,6 +12,7 @@ router.post(
   fileUploader.single("avatar"),
   async (req, res, next) => {
     try {
+      console.log(hello);
       const { pseudo, email, name, password } = req.body;
       const filePath = req.file.path;
       if (!password) {
